@@ -2,10 +2,13 @@
 
 -- To run you will need love2d @ http://love2d.org/
 -- Go to the directory which holds this file run using this command:
--- open -n -a love '/my/path/to/files'
+-- open -n -a love .
 
 -- https://github.com/Ulydev/push
 push = require 'push'
+Class = require 'class'
+require 'Paddle'
+require 'Ball'
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
@@ -38,48 +41,47 @@ function love.load()
 
   player1Score = 0
   player2Score = 0
-  player1Y = PADDLE_LENGTH
-  player2Y = VIRTUAL_HEIGHT - 2 * PADDLE_LENGTH
-  ballDx = math.random(2) == 1 and 200 or -200
-  ballDy = math.random(-50, 50) * 1.3
-  ballX = VIRTUAL_WIDTH / 2
-  ballY = VIRTUAL_HEIGHT / 2
+  player1 = Paddle(1)
+  player2 = Paddle(2)
+  ball = Ball(BALL_RADIUS)
+  ball:reset(false)
   
-  gameState = start
+  gameState = 'start'
 end
 
-function love.update(deltaTime)
+function love.update(dt)
   if love.keyboard.isDown('w') then
-    player1Y = player1Y + -PADDLE_SPEED * deltaTime
+    player1.dy = -PADDLE_SPEED
   elseif love.keyboard.isDown('s') then
-    player1Y = player1Y + PADDLE_SPEED * deltaTime
+    player1.dy = PADDLE_SPEED
+  else
+    player1.dy = 0
   end
 
   if love.keyboard.isDown('up') then
-    player2Y = player2Y + -PADDLE_SPEED * deltaTime
+    player2.dy = -PADDLE_SPEED
   elseif love.keyboard.isDown('down') then
-    player2Y = player2Y + PADDLE_SPEED * deltaTime
+    player2.dy = PADDLE_SPEED
+  else
+    player2.dy = 0
   end
 
   if gameState == 'play' then
-    ballX = ballX + ballDx * deltaTime
-    ballY = ballY + ballDy * deltaTime
+    ball:update(dt)
   end
+  player1:update(dt)
+  player2:update(dt)
 end
 
 function love.keypressed(key)
   if key == 'escape' then
     love.event.quit()
   elseif key == 'enter' or key == 'return' then
-
     if gameState == 'start' then
       gameState = 'play'
     else
       gameState = 'start'
-      ballX = VIRTUAL_WIDTH / 2
-      ballY = VIRTUAL_HEIGHT / 2
-      ballDx = math.random(2) == 1 and 200 or -200
-      ballDy = math.random(-50, 50) * 1.5
+      ball:reset(true)
     end
   end
 end
@@ -104,9 +106,9 @@ function love.draw()
   love.graphics.print(tostring(player2Score), VIRTUAL_WIDTH / 2 + 60, VIRTUAL_HEIGHT / 5)
   love.graphics.setColor(255, 255, 255, 255)
 
-  love.graphics.rectangle('fill', PADDLE_DIST_FROM_EDGE, player1Y, PADDLE_WIDTH, PADDLE_LENGTH)
-  love.graphics.rectangle('fill', VIRTUAL_WIDTH - PADDLE_DIST_FROM_EDGE - PADDLE_WIDTH, player2Y, PADDLE_WIDTH, PADDLE_LENGTH)
-  love.graphics.circle('fill', ballX, ballY, BALL_RADIUS)
+  player1:render()
+  player2:render()
+  ball:render()
 
   push:apply('end')
 end
