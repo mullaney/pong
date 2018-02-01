@@ -1,8 +1,8 @@
 Ball  = Class{}
 
 function Ball:init(radius)
-  self.x = VIRTUAL_WIDTH / 2
-  self.y = VIRTUAL_HEIGHT / 2
+  -- self.x = VIRTUAL_WIDTH / 2
+  -- self.y = VIRTUAL_HEIGHT / 2
   self.radius = radius
 end
 
@@ -10,8 +10,8 @@ function Ball:reset(moving)
   self.x = VIRTUAL_WIDTH / 2
   self.y = VIRTUAL_HEIGHT / 2
   if moving == true then
-    self.dy = math.random(2) == 1 and -100 or 100
-    self.dx = math.random(-50, 50)
+    self.dx = math.random(2) == 1 and -200 or 200
+    self.dy = math.random(-100, 100)
   else
     self.dy = 0
     self.dx = 0

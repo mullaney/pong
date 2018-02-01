@@ -81,8 +81,8 @@ function love.keypressed(key)
       gameState = 'play'
     else
       gameState = 'start'
-      ball:reset(true)
     end
+    ball:reset(true)
   end
 end
 
