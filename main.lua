@@ -20,6 +20,7 @@ PADDLE_DIST_FROM_EDGE = 20
 PADDLE_WIDTH = 6
 PADDLE_LENGTH = 45
 BALL_RADIUS = 5
+BALL_ACCELERATOR = 1.02
 
 PADDLE_SPEED = 400
 
@@ -53,6 +54,74 @@ function love.load()
 end
 
 function love.update(dt)
+  if gameState == 'play' then
+    ballSpeed = math.sqrt(ball.x * ball.x + ball.y * ball.y)
+
+    if ball:collides(player1) then
+      ball.x = player1.x + PADDLE_WIDTH + ball.radius
+      if      ball.y < player1.y + PADDLE_LENGTH * .1 then
+        -- skew sharp up
+        ball.dy = ball.dy - math.random(90, 150)
+      elseif  ball.y < player1.y + PADDLE_LENGTH * .25 then
+        -- skew up
+        ball.dy = ball.dy - math.random(50, 90)
+      elseif  ball.y < player1.y + PADDLE_LENGTH * .4 then
+        -- middle slightly up
+        ball.dy = ball.dy - math.random(20, 50)
+      elseif  ball.y < player1.y + PADDLE_LENGTH * .6 then
+        -- middle nearly even
+        ball.dy = ball.dy + math.random(-20, 20)
+      elseif  ball.y < player1.y + PADDLE_LENGTH * .75 then
+        -- middle slightly down
+        ball.dy = ball.dy + math.random(20, 50)
+      elseif  ball.y < player1.y + PADDLE_LENGTH * .9 then
+        -- skew down
+        ball.dy = ball.dy + math.random(50, 90)
+      else
+        -- skew sharp down
+        ball.dy = ball.dy + math.random(90, 150)
+      end
+      ball.dx = math.sqrt(ballSpeed * ballSpeed - ball.dy * ball.dy)
+    end
+
+    if ball:collides(player2) then
+      ball.x = player2.x - ball.radius
+      if      ball.y < player2.y + PADDLE_LENGTH * .1 then
+        -- skew sharp up
+        ball.dy = ball.dy - math.random(90, 150)
+      elseif  ball.y < player2.y + PADDLE_LENGTH * .25 then
+        -- skew up
+        ball.dy = ball.dy - math.random(50, 90)
+      elseif  ball.y < player2.y + PADDLE_LENGTH * .4 then
+        -- middle slightly up
+        ball.dy = ball.dy - math.random(20, 50)
+      elseif  ball.y < player2.y + PADDLE_LENGTH * .6 then
+        -- middle nearly even
+        ball.dy = ball.dy + math.random(-20, 20)
+      elseif  ball.y < player2.y + PADDLE_LENGTH * .75 then
+        -- middle slightly down
+        ball.dy = ball.dy + math.random(20, 50)
+      elseif  ball.y < player2.y + PADDLE_LENGTH * .9 then
+        -- skew down
+        ball.dy = ball.dy + math.random(50, 90)
+      else
+        -- skew sharp down
+        ball.dy = ball.dy + math.random(90, 150)
+      end
+      ball.dx = -math.sqrt(ballSpeed * ballSpeed - ball.dy * ball.dy)
+    end
+  end
+
+  if ball.y - ball.radius <= 0 then
+    ball.y = ball.radius
+    ball.dy = -ball.dy
+  end
+
+  if ball.y + ball.radius >= VIRTUAL_HEIGHT then
+    ball.y = VIRTUAL_HEIGHT - ball.radius
+    ball.dy = -ball.dy
+  end
+
   if love.keyboard.isDown('w') then
     player1.dy = -PADDLE_SPEED
   elseif love.keyboard.isDown('s') then

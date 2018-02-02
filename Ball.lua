@@ -20,8 +20,8 @@ function Ball:reset(moving)
   self.x = VIRTUAL_WIDTH / 2
   self.y = VIRTUAL_HEIGHT / 2
   if moving == true then
-    self.dx = math.random(2) == 1 and -200 or 200
-    self.dy = math.random(-100, 100)
+    self.dx = math.random(2) == 1 and -160 or 160
+    self.dy = math.random(-90, 90)
   else
     self.dy = 0
     self.dx = 0
