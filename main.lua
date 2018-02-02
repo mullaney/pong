@@ -20,9 +20,10 @@ PADDLE_DIST_FROM_EDGE = 20
 PADDLE_WIDTH = 6
 PADDLE_LENGTH = 45
 BALL_RADIUS = 5
-BALL_ACCELERATOR = 1.02
 
 PADDLE_SPEED = 400
+
+print('Pong')
 
 function love.load()
   love.graphics.setDefaultFilter('nearest', 'nearest')
@@ -55,7 +56,7 @@ end
 
 function love.update(dt)
   if gameState == 'play' then
-    ballSpeed = math.sqrt(ball.x * ball.x + ball.y * ball.y)
+    ballVelocity = ball:getVelocity()
 
     if ball:collides(player1) then
       ball.x = player1.x + PADDLE_WIDTH + ball.radius
@@ -81,7 +82,7 @@ function love.update(dt)
         -- skew sharp down
         ball.dy = ball.dy + math.random(90, 150)
       end
-      ball.dx = math.sqrt(ballSpeed * ballSpeed - ball.dy * ball.dy)
+      ball.dx = ball:setDeltaX(ballVelocity)
     end
 
     if ball:collides(player2) then
@@ -108,7 +109,7 @@ function love.update(dt)
         -- skew sharp down
         ball.dy = ball.dy + math.random(90, 150)
       end
-      ball.dx = -math.sqrt(ballSpeed * ballSpeed - ball.dy * ball.dy)
+      ball.dx = -ball:setDeltaX(ballVelocity)
     end
   end
 
@@ -184,6 +185,7 @@ function love.draw()
   ball:render()
 
   displayFPS()
+  -- displayBallSpeed()
 
   push:apply('end')
 end
@@ -193,3 +195,9 @@ function displayFPS()
   love.graphics.setColor(0, 255, 0, 255)
   love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 10, 10)
 end
+
+-- function displayBallSpeed()
+--   love.graphics.setFont(smallFont)
+--   love.graphics.setColor(0, 255, 255, 255)
+--   love.graphics.print('speed: ' .. tostring(math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy)), 10, 40)
+-- end

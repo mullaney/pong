@@ -1,5 +1,7 @@
 Ball  = Class{}
 
+BALL_ACCELERATOR = 1.1
+
 function Ball:init(radius)
   self.radius = radius
 end
@@ -35,4 +37,12 @@ end
 
 function Ball:render()
   love.graphics.circle('fill', self.x, self.y, self.radius)
+end
+
+function Ball:getVelocity()
+  return math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy)
+end
+
+function Ball:setDeltaX(ballVelocity)
+  return math.sqrt(ballVelocity * ballVelocity * BALL_ACCELERATOR - ball.dy * ball.dy)
 end
