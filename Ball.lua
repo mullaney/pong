@@ -1,9 +1,19 @@
 Ball  = Class{}
 
 function Ball:init(radius)
-  -- self.x = VIRTUAL_WIDTH / 2
-  -- self.y = VIRTUAL_HEIGHT / 2
   self.radius = radius
+end
+
+function Ball:collides(paddle)
+  if self.y + self.radius < paddle.y or self.y - self.radius > paddle.y + PADDLE_LENGTH then
+    return false
+  end
+
+  if self.x + self.radius < paddle.x or self.x - self.radius > paddle.x + PADDLE_WIDTH then
+    return false
+  end 
+  
+  return true
 end
 
 function Ball:reset(moving)

@@ -28,6 +28,8 @@ function love.load()
 
   math.randomseed(os.time())
 
+  love.window.setTitle('Pong')
+
   scoreFont = love.graphics.newFont('font.ttf', 64)
   smallFont = love.graphics.newFont('font.ttf', 20)
 
@@ -41,6 +43,7 @@ function love.load()
 
   player1Score = 0
   player2Score = 0
+
   player1 = Paddle(1)
   player2 = Paddle(2)
   ball = Ball(BALL_RADIUS)
@@ -69,6 +72,7 @@ function love.update(dt)
   if gameState == 'play' then
     ball:update(dt)
   end
+
   player1:update(dt)
   player2:update(dt)
 end
@@ -110,5 +114,13 @@ function love.draw()
   player2:render()
   ball:render()
 
+  displayFPS()
+
   push:apply('end')
+end
+
+function displayFPS()
+  love.graphics.setFont(smallFont)
+  love.graphics.setColor(0, 255, 0, 255)
+  love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 10, 10)
 end
