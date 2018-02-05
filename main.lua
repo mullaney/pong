@@ -23,17 +23,19 @@ BALL_RADIUS = 5
 
 PADDLE_SPEED = 400
 
+WINNING_SCORE = 10
+
 print('Pong')
 
 function love.load()
   love.graphics.setDefaultFilter('nearest', 'nearest')
 
+  love.window.setTitle('Pong')
+  
   math.randomseed(os.time())
 
-  love.window.setTitle('Pong')
-
-  scoreFont = love.graphics.newFont('font.ttf', 64)
   smallFont = love.graphics.newFont('font.ttf', 20)
+  scoreFont = love.graphics.newFont('font.ttf', 64)
 
   love.graphics.setFont(smallFont)
 
@@ -147,9 +149,14 @@ function love.update(dt)
     end
   elseif ball.x > VIRTUAL_WIDTH then
     player1Score = player1Score + 1
-    ball:reset(true)
-    if ball.dx > 0 then
-      ball.dx = -ball.dx
+    if player1Score >= WINNING_SCORE then
+      ball:clear()
+      gameState = 'game over'
+    else
+      ball:reset(true)
+      if ball.dx > 0 then
+        ball.dx = -ball.dx
+      end
     end
   end
 
@@ -183,21 +190,18 @@ function love.draw()
   love.graphics.setFont(smallFont)
 
   if gameState == 'start' then
-    love.graphics.printf('Hello Start State!', 0, 20, VIRTUAL_WIDTH, 'center')
+    love.graphics.printf('Press enter to start!', 0, 20, VIRTUAL_WIDTH, 'center')
   else
-    love.graphics.printf('Hello Play State!', 0, 20, VIRTUAL_WIDTH, 'center')
+    love.graphics.printf('Play!', 0, 20, VIRTUAL_WIDTH, 'center')
   end
 
-  love.graphics.setFont(scoreFont)
-  love.graphics.setColor(127, 127, 255, 127)
-  love.graphics.print(tostring(player1Score), VIRTUAL_WIDTH / 2 - 100, VIRTUAL_HEIGHT / 5)
-  love.graphics.print(tostring(player2Score), VIRTUAL_WIDTH / 2 + 60, VIRTUAL_HEIGHT / 5)
-  love.graphics.setColor(255, 255, 255, 255)
-
+  
   player1:render()
   player2:render()
   ball:render()
 
+  displayScore()
+  
   displayFPS()
   -- displayBallSpeed()
 
@@ -210,8 +214,14 @@ function displayFPS()
   love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 10, 10)
 end
 
--- function displayBallSpeed()
---   love.graphics.setFont(smallFont)
---   love.graphics.setColor(0, 255, 255, 255)
---   love.graphics.print('speed: ' .. tostring(math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy)), 10, 40)
--- end
+function displayScore()
+  love.graphics.setFont(scoreFont)
+  love.graphics.setColor(127, 127, 255, 127)
+  love.graphics.print(tostring(player1Score), VIRTUAL_WIDTH / 2 - 100, VIRTUAL_HEIGHT / 5)
+  love.graphics.print(tostring(player2Score), VIRTUAL_WIDTH / 2 + 60, VIRTUAL_HEIGHT / 5)
+  if gameState == 'game over' then 
+    love.graphics.setFont(heroFont)
+    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.print('Game Over!')
+  end
+end

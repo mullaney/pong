@@ -46,3 +46,10 @@ end
 function Ball:setDeltaX(ballVelocity)
   return math.sqrt(ballVelocity * ballVelocity * BALL_ACCELERATOR - ball.dy * ball.dy)
 end
+
+function Ball:clear() 
+  ball.x = -100
+  ball.y = -100
+  ball.dx = 0
+  ball.dy = 0
+end
