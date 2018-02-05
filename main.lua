@@ -139,6 +139,20 @@ function love.update(dt)
     player2.dy = 0
   end
 
+  if ball.x < 0 then
+    player2Score = player2Score + 1
+    ball:reset(true)
+    if ball.dx < 0 then
+      ball.dx = -ball.dx
+    end
+  elseif ball.x > VIRTUAL_WIDTH then
+    player1Score = player1Score + 1
+    ball:reset(true)
+    if ball.dx > 0 then
+      ball.dx = -ball.dx
+    end
+  end
+
   if gameState == 'play' then
     ball:update(dt)
   end
