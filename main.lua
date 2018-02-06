@@ -23,7 +23,7 @@ BALL_RADIUS = 5
 
 PADDLE_SPEED = 400
 
-WINNING_SCORE = 10
+WINNING_SCORE = 1
 
 print('Pong')
 
@@ -36,6 +36,7 @@ function love.load()
 
   smallFont = love.graphics.newFont('font.ttf', 20)
   scoreFont = love.graphics.newFont('font.ttf', 64)
+  heroFont  = love.graphics.newFont('font.ttf', 96)
 
   love.graphics.setFont(smallFont)
 
@@ -112,18 +113,41 @@ function love.update(dt)
         ball.dy = ball.dy + math.random(90, 150)
       end
       ball.dx = -ball:setDeltaX(ballVelocity)
+    end   
+    if ball.y - ball.radius <= 0 then
+      ball.y = ball.radius
+      ball.dy = -ball.dy
+    end
+  
+    if ball.y + ball.radius >= VIRTUAL_HEIGHT then
+      ball.y = VIRTUAL_HEIGHT - ball.radius
+      ball.dy = -ball.dy
+    end
+    if ball.x < 0 then
+      player2Score = player2Score + 1
+      if player2Score >= WINNING_SCORE then
+        ball:clear()
+        gameState = 'game over'
+      else
+        ball:reset(true)
+        if ball.dx > 0 then
+          ball.dx = -ball.dx
+        end
+      end
+    elseif ball.x > VIRTUAL_WIDTH then
+      player1Score = player1Score + 1
+      if player1Score >= WINNING_SCORE then
+        ball:clear()
+        gameState = 'game over'
+      else
+        ball:reset(true)
+        if ball.dx < 0 then
+          ball.dx = -ball.dx
+        end
+      end
     end
   end
 
-  if ball.y - ball.radius <= 0 then
-    ball.y = ball.radius
-    ball.dy = -ball.dy
-  end
-
-  if ball.y + ball.radius >= VIRTUAL_HEIGHT then
-    ball.y = VIRTUAL_HEIGHT - ball.radius
-    ball.dy = -ball.dy
-  end
 
   if love.keyboard.isDown('w') then
     player1.dy = -PADDLE_SPEED
@@ -141,24 +165,6 @@ function love.update(dt)
     player2.dy = 0
   end
 
-  if ball.x < 0 then
-    player2Score = player2Score + 1
-    ball:reset(true)
-    if ball.dx < 0 then
-      ball.dx = -ball.dx
-    end
-  elseif ball.x > VIRTUAL_WIDTH then
-    player1Score = player1Score + 1
-    if player1Score >= WINNING_SCORE then
-      ball:clear()
-      gameState = 'game over'
-    else
-      ball:reset(true)
-      if ball.dx > 0 then
-        ball.dx = -ball.dx
-      end
-    end
-  end
 
   if gameState == 'play' then
     ball:update(dt)
@@ -222,6 +228,6 @@ function displayScore()
   if gameState == 'game over' then 
     love.graphics.setFont(heroFont)
     love.graphics.setColor(255, 255, 255, 255)
-    love.graphics.print('Game Over!')
+    love.graphics.printf('Game Over!', 40, 140, VIRTUAL_WIDTH, center)
   end
 end

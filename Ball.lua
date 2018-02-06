@@ -1,6 +1,6 @@
 Ball  = Class{}
 
-BALL_ACCELERATOR = 1.1
+BALL_ACCELERATOR = 1.2
 
 function Ball:init(radius)
   self.radius = radius
